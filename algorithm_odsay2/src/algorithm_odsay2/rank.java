@@ -1,12 +1,16 @@
 package algorithm_odsay2;
 
+import java.util.Vector;
+
 public class rank {
 	boolean key;
 	int id;
 	int count;
+	String idName;
 	int time;
 	int change;
 	int total;
+	
 
 	rank() {
 		this.key = true;
@@ -15,6 +19,7 @@ public class rank {
 		this.count = 0;
 		this.change = 0;
 		this.total = 0;
+		this.idName = null;
 	}
 
 	public int getId() {
@@ -23,6 +28,14 @@ public class rank {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+	
+	public String getIdName() {
+		return this.idName;
+	}
+
+	public void setIdName(String idName) {
+		this.idName = idName;
 	}
 
 	public int getCount() {

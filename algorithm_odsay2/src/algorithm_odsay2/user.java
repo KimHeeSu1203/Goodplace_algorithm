@@ -19,12 +19,14 @@ public class user {
 	public Vector<Integer> check;
 	public db checkTransfer;
 	public boolean sopt; // 최단거리 최소환승 부분임
+	public Vector<rank> rankResult;
 
 	public user() {
 		this.codestore = new Vector<Integer>();
 		this.check = new Vector<Integer>();
 		this.checkTransfer = new db();
 		this.sopt = true;
+		this.rankResult = new Vector<rank>();
 	}
 
 	public void findcode(int tt) throws Exception {
@@ -132,7 +134,7 @@ public class user {
 
 		try {
 			URL url = new URL("https://api.odsay.com/v1/api/subwayStationInfo?lang=0&" + "stationID="
-					+ codestore.get(parameter) + "&apiKey=WcVpRfZ6U%2BAuKf8AgOTZapx9edixkIvmJLWnT9KgiaE");
+					+ codestore.get(parameter) + "&apiKey=21%2BGVf2%2Bpba7MiDqCw3tmJXs/VHtKIjVeLRACAkBrD4");
 			// WcVpRfZ6U%2BAuKf8AgOTZapx9edixkIvmJLWnT9KgiaE-하이드아웃
 			// 15XH4EhsIQGTKIwZAjii5dwtmXtv%2BdVulD4QWniB%2Bjg-히수집
 			// 9loymI1RM20ytIKmWKFe0x8arsNpYKoPSgHLoGhzANE-은비집
@@ -155,7 +157,7 @@ public class user {
 		}
 	}
 
-	public void makeRanking(Vector<String> commonResult) throws Exception {
+	public Vector<rank> makeRanking(Vector<String> commonResult) throws Exception {
 		// Vector<rank> rank1 = new Vector<rank>();
 		Vector<rank> rankstore = new Vector<rank>();
 //         rank test = new rank();
@@ -181,11 +183,24 @@ public class user {
 
 		for (int i = 0; i < tempCommonSet.size(); i++) {
 			rank tempRank = new rank();
-			tempRank.id = tempCommonSet.elementAt(i);
-			tempRank.count = makeRoute(tempCommonSet.get(i), commonResult.get(i)).count;
-			tempRank.change = makeRoute(tempCommonSet.get(i), commonResult.get(i)).change;
-			tempRank.time = makeRoute(tempCommonSet.get(i), commonResult.get(i)).time;
-			rankstore.add(tempRank);
+
+			if (codestore.get(0).equals(tempCommonSet.get(i)) != true) {// 만약 다르다면
+				tempRank.id = tempCommonSet.elementAt(i);
+				tempRank.count = makeRoute(tempCommonSet.get(i), commonResult.get(i)).count;
+				tempRank.change = makeRoute(tempCommonSet.get(i), commonResult.get(i)).change;
+				tempRank.time = makeRoute(tempCommonSet.get(i), commonResult.get(i)).time;
+				tempRank.idName = makeRoute(tempCommonSet.get(i), commonResult.get(i)).idName;
+				// System.out.println("idName :"+ tempRank.idName);
+				
+			}
+			else {
+				tempRank.id = tempCommonSet.elementAt(i);
+				tempRank.count = 0;
+				tempRank.change = 0;
+				tempRank.time = 0;
+				tempRank.idName = commonResult.get(i);
+			}
+				rankstore.add(tempRank);
 		}
 
 //         for(int i=0;i<rankstore.size();i++) {
@@ -199,7 +214,7 @@ public class user {
 			else // 최소환승
 				rankstore.get(i).setTotal1();
 		}
-		
+
 		for (int i = 0; i < rankstore.size(); i++) {
 			for (int j = 0; j < rankstore.size() - 1; j++) {
 				if (rankstore.get(j).total > rankstore.get(j + 1).total) {
@@ -208,6 +223,7 @@ public class user {
 					rank test = new rank();
 					rank test2 = new rank();
 					test.id = rankstore.elementAt(j).id;
+					test.idName = rankstore.elementAt(j).idName;
 					test.count = rankstore.elementAt(j).count;
 					test.change = rankstore.elementAt(j).change;
 					test.key = rankstore.elementAt(j).key;
@@ -215,34 +231,37 @@ public class user {
 					test.total = rankstore.elementAt(j).total;
 
 					test2.id = rankstore.elementAt(j + 1).id;
+					test2.idName = rankstore.elementAt(j + 1).idName;
 					test2.count = rankstore.elementAt(j + 1).count;
 					test2.change = rankstore.elementAt(j + 1).change;
 					test2.key = rankstore.elementAt(j + 1).key;
 					test2.time = rankstore.elementAt(j + 1).time;
 					test2.total = rankstore.elementAt(j + 1).total;
-					
+
 					rankstore.get(j).id = test2.id;
 					rankstore.get(j).count = test2.count;
+
+					rankstore.get(j).idName = test2.idName;
 					rankstore.get(j).change = test2.change;
 					rankstore.get(j).key = test2.key;
 					rankstore.get(j).time = test2.time;
 					rankstore.get(j).total = test2.total;
-					
-					
+
 					rankstore.get(j + 1).id = test.id;
 					rankstore.get(j + 1).count = test.count;
+					rankstore.get(j + 1).idName = test.idName;
 					rankstore.get(j + 1).change = test.change;
 					rankstore.get(j + 1).key = test.key;
 					rankstore.get(j + 1).time = test.time;
 					rankstore.get(j + 1).total = test.total;
 
-					//rankstore.get(j).id = test2.id;
+					// rankstore.get(j).id = test2.id;
 //               System.out.print(rankstore.get(j).id + ",");
-					//rankstore.get(j).count = test2.count;
+					// rankstore.get(j).count = test2.count;
 //               System.out.println(rankstore.get(j).id);
-		//			rankstore.get(j + 1).id = test.id;
+					// rankstore.get(j + 1).id = test.id;
 //               System.out.print(rankstore.get(j).id+",");
-	//				rankstore.get(j + 1).count = test.count;
+					// rankstore.get(j + 1).count = test.count;
 //               System.out.println(rankstore.get(j).id);
 //               rankstore.set(j, rankstore.elementAt(j + 1));
 //               rankstore.set(j + 1, test);
@@ -256,13 +275,18 @@ public class user {
 		// true가 최소환승
 		for (int i = 0; i < 3; i++) {
 			System.out.println("★TOP★" + (i + 1));
-			String name = noduplicate.rankResult(rankstore.get(i).id);	
-			System.out.print(name + "역 , total :" + rankstore.get(i).total); //System.out.print(name + "역, " + rankstore.get(i).count + "회");
+			String name = noduplicate.rankResult(rankstore.get(i).id);
+			System.out.print(rankstore.get(i).idName + "역 , total :" + rankstore.get(i).total); // System.out.print(name
+																								// + "역, " +
+																								// rankstore.get(i).count
+																								// + "회");
 //          System.out.println(rankstore.get(i).count);
 //          noduplicate.showCommonset(rankstore.get(i).id);
 			System.out.println();
 
 		}
+
+		return rankstore;
 	}
 
 	public rank makeRoute(int commonSet, String name) throws Exception { // 첫번쨰로 뭐가 담기던지 어짜피 api에서 알아서 환승역인지 검사해서
@@ -281,6 +305,7 @@ public class user {
 		long globalTravelTime = (long) json.get("globalStationCount");
 
 		rank tempRank = new rank();
+		tempRank.idName = name;
 
 		try {
 			System.out.print("[" + name + "]");
@@ -341,9 +366,10 @@ public class user {
 			else
 				tempFlag = 2;
 
+			// if(codestore.get(0) != commonSet) {
 			URL url = new URL("https://api.odsay.com/v1/api/subwayPath?lang=0&CID=1000&SID=" + codestore.get(0)
 					+ "&EID=" + commonSet + "&Sopt=" + tempFlag
-					+ "&apiKey=WcVpRfZ6U%2BAuKf8AgOTZapx9edixkIvmJLWnT9KgiaE");
+					+ "&apiKey=21%2BGVf2%2Bpba7MiDqCw3tmJXs/VHtKIjVeLRACAkBrD4");
 			// WcVpRfZ6U%2BAuKf8AgOTZapx9edixkIvmJLWnT9KgiaE-하이드아웃
 			// 15XH4EhsIQGTKIwZAjii5dwtmXtv%2BdVulD4QWniB%2Bjg-히수집
 			// 9loymI1RM20ytIKmWKFe0x8arsNpYKoPSgHLoGhzANE-은비집

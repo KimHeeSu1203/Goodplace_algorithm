@@ -33,6 +33,7 @@ public class main {
       userCount = test.a;
       test.userRouteChoice();
 
+      test.Delete2();
       user[] user = new user[userCount];// userCount에 따라 각 user객체들을 담는 배열
       for (int i = 0; i < userCount; i++) {
          user[i] = new user();// userCount만큼 user객체 생성
@@ -93,8 +94,20 @@ public class main {
       for(int i = 0; i < user.length; i++)
       {
         System.out.println("<user"+(i+1)+">");
-         user[i].makeRanking(test.commonResult);
+         user[i].rankResult = user[i].makeRanking(test.commonResult);
       }
+      
+      int count = 1;
+      for(int i = 0; i < user.length;i++) {
+    	  for(int j=0 ; j <3 ; j++) {
+    		  //test.rankSave(count, user, rank, code);
+    		  test.rankSave(count, i+1, j+1, user[i].rankResult.elementAt(j).id, user[i].rankResult.elementAt(j).idName);
+    		  count++;
+    	  }
+    	  
+      }
+      
+      test.Delete1();
    }
    
    //findresult에 x 조건을 주지 않아서 생기는 문제임,,,그렇다면 findresult안에 commonset을 집어넣는게 답인듯
@@ -112,7 +125,7 @@ public class main {
             System.out.println("user" + (y + 1) + "의 코드 집합: " + user[y].codestore);
          }
          int commonsize = makeCommonset(userCount, user, commonset);
-         if(commonsize >= 1)
+         if(commonsize >= 4)
          {
             break;
          }
